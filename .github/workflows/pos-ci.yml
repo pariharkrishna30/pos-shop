@@ -32,7 +32,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/pos-app:latest
+            ${{ secrets.DOCKER_USERNAME }}/pos-app:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/pos-app:${{ github.sha }}
 
       
