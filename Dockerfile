@@ -1,44 +1,51 @@
-# ----------------------------
-# 1. Build React frontend
-# ----------------------------
+# Stage 1: Build Laravel backend
+FROM php:8.2-fpm AS backend
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git unzip libpng-dev libonig-dev libxml2-dev zip curl npm nodejs \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Composer
+COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+# Copy PHP dependencies first for caching
+COPY backend/composer.json backend/composer.lock ./
+
+# Install Laravel dependencies
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy Laravel app code
+COPY backend/ ./
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www
+
+# Stage 2: Build React frontend
 FROM node:20 AS frontend
 
 WORKDIR /app
 
 COPY frontend/package*.json ./
 RUN npm install
-
-COPY frontend/ .
+COPY frontend/ ./
 RUN npm run build
 
-
-# ----------------------------
-# 2. Laravel backend
-# ----------------------------
-FROM php:8.3-fpm
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev zip unzip
-
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
-
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# Stage 3: Final image
+FROM php:8.2-fpm
 
 WORKDIR /var/www
 
-# Copy Laravel project
-COPY backend/ /var/www
+# Copy Laravel backend
+COPY --from=backend /var/www /var/www
 
-# Copy built React into Laravel public (adjust if needed)
-COPY --from=frontend /app/dist /var/www/public/app
+# Copy React build into Laravel public folder
+COPY --from=frontend /app/build /var/www/public
 
-# Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www
 
 EXPOSE 9000
