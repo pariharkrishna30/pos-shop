@@ -27,10 +27,9 @@ jobs:
 
       # 4. Build & Push Docker Image
 
-      - name: Build & Push Image
+      - name: Build & Push Docker Image
         uses: docker/build-push-action@v5
-        run: |
-          docker tag ${{ secrets.DOCKER_USERNAME }}/pos-app:${{ github.sha }} \
-                     ${{ secrets.DOCKER_USERNAME }}/pos-app:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/pos-app:latest
-      
+        with:
+            context: .
+            push: true
+            tags: ${{ secrets.DOCKER_USERNAME }}/pos-app:latest,${{ secrets.DOCKER_USERNAME }}/pos-app:${{ github.sha }}
