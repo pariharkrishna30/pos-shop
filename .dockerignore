@@ -1,7 +1,26 @@
-node_modules
-vendor
+# Git
 .git
+.gitignore
+
+# Node
+node_modules
+frontend/node_modules
+
+# Laravel
+backend/vendor
+backend/storage/logs
+backend/storage/framework/cache
+backend/storage/framework/sessions
+backend/storage/framework/views
+
+# Env
 .env
-dist
-build
-npm-debug.log
+backend/.env
+
+# Build files
+frontend/build
+frontend/dist
+
+# OS
+.DS_Store
+Thumbs.db

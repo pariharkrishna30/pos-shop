@@ -33,7 +33,7 @@ WORKDIR /var/www
 COPY backend/ /var/www
 
 # Copy built React into Laravel public (adjust if needed)
-COPY --from=frontend /app/build /var/www/public/app
+COPY --from=frontend /app/dist /var/www/public/app
 
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
