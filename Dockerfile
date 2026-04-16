@@ -43,7 +43,7 @@ WORKDIR /var/www
 COPY --from=backend /var/www /var/www
 
 # Copy React build into Laravel public folder
-COPY --from=frontend /app/build /var/www/public
+COPY --from=frontend /app/dist /var/www/public
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www
