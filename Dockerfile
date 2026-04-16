@@ -13,7 +13,7 @@ COPY --from=composer:2.5 /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copy PHP dependencies first for caching
-COPY backend/composer.json backend/composer.lock ./
+COPY backend/composer.json ./
 
 # Install Laravel dependencies
 RUN composer install --no-dev --optimize-autoloader
