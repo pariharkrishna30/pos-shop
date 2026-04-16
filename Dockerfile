@@ -16,10 +16,21 @@ WORKDIR /var/www
 COPY backend/composer.json backend/composer.lock ./
 
 # Install Laravel dependencies
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copy Laravel app code
 COPY backend/ ./
+
+# Create env file (required)
+RUN cp .env.example .env || true
+
+# Generate app key (required before caching)
+RUN php artisan key:generate || true
+
+# Now safe to cache
+RUN php artisan config:cache || true \
+    && php artisan route:cache || true \
+    && php artisan view:cache || true
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www
