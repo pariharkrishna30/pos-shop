@@ -1,6 +1,12 @@
 # Stage 1: Build Laravel backend
 FROM php:8.2-fpm AS backend
 
+LABEL org.opencontainers.image.title="POS System" \
+      org.opencontainers.image.description="Point of Sale system with Laravel backend and React frontend, containerized using Docker" \
+      org.opencontainers.image.version="1.0.0" \
+      org.opencontainers.image.authors="Krishna parihar" \
+      org.opencontainers.image.source="https://github.com/pariharkrishna30/pos-shop"
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     git unzip libpng-dev libonig-dev libxml2-dev zip curl npm nodejs \
